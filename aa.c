@@ -8,7 +8,7 @@
 
 int main(int argc, char**  argv){
   int clientSocket,len;
-  char c[5];
+  char c[5],e[10];
   float res;
   char buffer[1024],buffer1[1024],username[30],password[30],error1[30],error2[30],recipient[30],msg[100],error3[30];
   strcpy(error1,"Invalid username");
@@ -68,14 +68,15 @@ while(1)
         strcpy(recipient,"");
         strcpy(buffer,"");
 	printf("Enter the recipient address\n");
-	gets(recipient);
+	scanf("%s",recipient);
     	send(clientSocket, recipient,30, 0);
   	recv(clientSocket, buffer, 30, 0);
         if(!(strcmp(buffer,error3))==0)
 	{
 		strcpy(msg,"");
 		strcpy(buffer,"");
-		printf("Enter the messsage\n");
+		printf("Enter the messsage : ");
+		gets(e);
 		gets(msg);
                 send(clientSocket, msg,100,0);
 		recv(clientSocket,buffer,30,0);

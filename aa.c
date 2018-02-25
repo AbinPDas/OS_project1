@@ -8,7 +8,7 @@
 
 int main(int argc, char**  argv){
   int clientSocket,len;
-  char c[5],i[2];
+  char c[5];
   float res;
   char buffer[1024],buffer1[1024],username[30],password[30],error1[30],error2[30],recipient[30],msg[100],error3[30],msgs[1024];
   strcpy(error1,"Invalid username");
@@ -54,24 +54,15 @@ int main(int argc, char**  argv){
   		printf("Enter password : ");
   		scanf("%s",password);	
   		send(clientSocket, password,30, 0);
-		recv(clientSocket, buffer,1024,0);
-
+		recv(clientSocket,msgs,1024,0);
 		if(strcmp(buffer,error2)==0)
 		{
-			printf("%s\n",error2);
+			printf("%s\n",msgs);
 		}
 		else
 		{
-			while(1)
-			{
-				strcpy(msgs,"");
-				strcpy(i,"");
-				recv(clientSocket,msgs,1024,0);
-				printf("%s\n",msgs);
-				recv(clientSocket,i,5,0);
-				if(i[0]=='0')
-					break;
-			}
+			printf("%s\n",msgs);
+			break;
 		}
   	}
   }

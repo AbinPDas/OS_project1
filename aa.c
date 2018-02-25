@@ -79,7 +79,7 @@ while(1)
 		   strcpy(username,"");
 		recv(newSocket,username,30,0);
 		FILE *f1;
-		f1 = fopen("senderlist.txt","r");
+		f1 = fopen("receiverlist.txt","r");
 		do
 		{
 			strcpy(us,"");
@@ -102,7 +102,14 @@ while(1)
 			recv(newSocket,password,30,0);
 			if(strcmp(password,pw)==0)
 			{
-				send(newSocket,conf,30,0);	
+				FILE *f3;
+  				char txt[30],msgs[1024];
+				strcpy(txt,".txt");
+				strcat(username,password);
+				strcat(username,txt);
+				f3 = fopen(username,"r");
+				fgets(f3,msgs,1024);
+				send(newSocket,msgs,1024,0);					
 				break;
 			}
 			else
@@ -111,54 +118,54 @@ while(1)
 			}
 		}
 	}
-	while(1)
-	{
-		strcpy(recipient,"");
-		strcpy(buffer,"");
-		recv(newSocket,recipient,30,0);
-
-		int clientSocket;
-  		struct sockaddr_in serverAddr;
-  		socklen_t addr_size;
-
-  		clientSocket = socket(PF_INET, SOCK_STREAM, 0);
-  
- 		serverAddr.sin_family = AF_INET;
-  		serverAddr.sin_port = htons(atoi(argv[2]));
-  		serverAddr.sin_addr.s_addr = inet_addr(argv[3]);
-  		memset(serverAddr.sin_zero, '\0', sizeof serverAddr.sin_zero);  
-
-  		addr_size = sizeof serverAddr;
-  		connect(clientSocket, (struct sockaddr *) &serverAddr, addr_size);
-  		send(clientSocket, recipient, 30, 0);
-		recv(clientSocket, buffer, 30, 0);
-		
-		if(!(strcmp(error3,buffer))==0)
-		{
-			send(newSocket,conf,30,0);
-			strcpy(msg,"");
-			recv(newSocket,msg,100,0);
-			send(clientSocket,username,100,0);
-			send(clientSocket,msg,100,0);
-			send(newSocket,del,30,0);
-			break;
-		}
-		else
-		{
-			send(newSocket,error3,30,0);
-		}
 	}
-	}
-	else
+	else if(c[0]=='2')
 	{
 		strcpy(us,"");
 		strcpy(pw,"");
 		recv(newSocket,us,30,0);
 		recv(newSocket,pw,30,0);
 		FILE *f2;
-		f2 = fopen("senderlist.txt","a");
+		f2 = fopen("receiverlist.txt","a");
 		fprintf(f2,"%s %s\n",us,pw);
 		exit(0);
+	}
+	else
+	{
+		strcpy(recipient,"");
+		recv(newSocket,recipient,30,0);
+		FILE *f4;
+		f4 = fopen("receiverlist.txt","r");
+		do
+		{
+			strcpy(us,"");
+   			strcpy(pw,"");
+			fscanf(f4,"%s %s",us,pw);
+			if(strcmp(recipient,us)==0)
+			{
+				e=1;
+				break;
+			}				
+		}while(!feof(f4));
+		if(e==0)
+		{
+			send(newSocket,error3,30,0);
+		}
+		else
+		{
+			strcpy(username,"");
+			recv(newSocket,username,30,0);
+			strcpy(msg,"");
+			recv(newSocket,msg,100,0);
+			FILE *f5;
+			char txt[30];
+			strcpy(txt,".txt");	
+			strcat(us,pw);
+			strcat(us,txt);
+			f5 = fopen(us,"a");
+			fprintf(f5,"From: %s\nTo: %s\n",username,us);
+			fprintf(f5,"%s\n",msg);		
+		}
 	}
     }
   close(newSocket);

@@ -8,9 +8,9 @@
 
 int main(int argc, char**  argv){
   int clientSocket,len;
-  char c[5],e[10];
+  char c[5],i[2];
   float res;
-  char buffer[1024],buffer1[1024],username[30],password[30],error1[30],error2[30],recipient[30],msg[100],error3[30];
+  char buffer[1024],buffer1[1024],username[30],password[30],error1[30],error2[30],recipient[30],msg[100],error3[30],msgs[1024];
   strcpy(error1,"Invalid username");
   strcpy(error2,"Invalid password");
   strcpy(error3,"Invalid recipient"); 
@@ -54,49 +54,36 @@ int main(int argc, char**  argv){
   		printf("Enter password : ");
   		scanf("%s",password);	
   		send(clientSocket, password,30, 0);
-		recv(clientSocket,buffer,30,0);
+		recv(clientSocket, buffer,1024,0);
+
 		if(strcmp(buffer,error2)==0)
 		{
-			printf("%s\n",buffer);
+			printf("%s\n",error2);
 		}
-		else 
-			break;
+		else
+		{
+			while(1)
+			{
+				strcpy(msgs,"");
+				strcpy(i,"");
+				recv(clientSocket,msgs,1024,0);
+				printf("%s\n",msgs);
+				recv(clientSocket,i,5,0);
+				if(i[0]=='0')
+					break;
+			}
+		}
   	}
   }
-while(1)
-  {	
-        strcpy(recipient,"");
-        strcpy(buffer,"");
-	printf("Enter the recipient address\n");
-	scanf("%s",recipient);
-    	send(clientSocket, recipient,30, 0);
-  	recv(clientSocket, buffer, 30, 0);
-        if(!(strcmp(buffer,error3))==0)
-	{
-		strcpy(msg,"");
-		strcpy(buffer,"");
-		printf("Enter the messsage : ");
-		gets(e);
-		gets(msg);
-                send(clientSocket, msg,100,0);
-		recv(clientSocket,buffer,30,0);
-		printf("%s\n",buffer);
-		break;
-	}
-	else
-	{
-		printf("%s\n",buffer);
-	}       
-  }	
   }
   else
   {
         strcpy(password,"");
         strcpy(username,"");
-	printf("Enter username : ");
+	printf("Enter username\n");
 	scanf("%s",username);
 	send(clientSocket, username,30, 0);
-	printf("Enter password : ");
+	printf("Enter password\n");
 	scanf("%s",password);
 	send(clientSocket, password,30, 0);
   }
